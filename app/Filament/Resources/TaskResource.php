@@ -172,16 +172,13 @@ class TaskResource extends Resource
                             ->native(false),
                     ])
                     ->columns(2)
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['created_from']) {
+                            $query->where('created_at', '>=', $data['created_from']);
+                        }
+                        if ($data['created_until']) {
+                            $query->where('created_at', '<=', $data['created_until']);
+                        }
                     }),
             ]))
             ->actions([
