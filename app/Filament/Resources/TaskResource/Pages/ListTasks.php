@@ -24,15 +24,24 @@ class ListTasks extends ListRecords
             'all' => Tab::make('All'),
             'today' => Tab::make('Today')
                 ->modifyQueryUsing(function ($query) {
-                    return $query->whereDate('created_at', now());
+                    $query->whereBetween('created_at', [
+                        now()->startOfDay(),
+                        now()->endOfDay(),
+                    ]);
                 }),
             'yesterday' => Tab::make('Yesterday')
                 ->modifyQueryUsing(function ($query) {
-                    return $query->whereDate('created_at', now()->subDay());
+                    $query->whereBetween('created_at', [
+                        now()->subDay()->startOfDay(),
+                        now()->subDay()->endOfDay(),
+                    ]);
                 }),
             'this_month' => Tab::make('This Month')
                 ->modifyQueryUsing(function ($query) {
-                    return $query->whereMonth('created_at', now()->month);
+                    $query->whereBetween('created_at', [
+                        now()->startOfMonth(),
+                        now()->endOfMonth(),
+                    ]);
                 }),
         ];
     }
